@@ -5,6 +5,9 @@ import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
+import com.jarvis.albumlist.module.home.album.AlbumViewModel
+import com.jarvis.albumlist.module.home.bookmark.AlbumBookmarkViewModel
+import com.jarvis.albumlist.module.main.MainViewModel
 
 @Suppress("UNCHECKED_CAST")
 class ViewModelFactory(owner: SavedStateRegistryOwner, defaultArgs: Bundle? = Bundle()) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
@@ -12,8 +15,9 @@ class ViewModelFactory(owner: SavedStateRegistryOwner, defaultArgs: Bundle? = Bu
         return with(modelClass) {
 
             when {
-
-                // TODO
+                isAssignableFrom(MainViewModel::class.java) -> ViewModelBuilder.buildMainViewModel()
+                isAssignableFrom(AlbumViewModel::class.java) -> ViewModelBuilder.buildAlbumViewModel()
+                isAssignableFrom(AlbumBookmarkViewModel::class.java) -> ViewModelBuilder.buildAlbumBookmarkViewModel()
 
                 else ->
                     throw IllegalArgumentException(

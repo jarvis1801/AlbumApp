@@ -3,43 +3,25 @@ package com.jarvis.albumlist.base
 import android.content.Context
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.jarvis.albumlist.model.album.Album
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.withContext
 
-abstract class BaseRecyclerViewAdapter<BVH: BaseViewHolder>(val context: Context) : RecyclerView.Adapter<BVH>() {
-    protected var dataList = arrayListOf<Any>()
+abstract class BaseRecyclerViewAdapter<BVH: BaseViewHolder, T>(val context: Context) : RecyclerView.Adapter<BVH>() {
+    protected var dataList = arrayListOf<T>()
 
     override fun getItemCount(): Int = dataList.size
 
-    suspend fun submitList(newDataList: ArrayList<Any>) {
+    abstract fun getItemDiffCallback(dataList: ArrayList<T>, newDataList: List<T>): DiffUtil.Callback
+
+    suspend fun submitList(newDataList: List<T>) {
         if (dataList.isEmpty()) {
-            dataList = newDataList
+            dataList = newDataList.toCollection(ArrayList())
             withContext(Main) { notifyDataSetChanged() }
         } else {
-            val diffResult = DiffUtil.calculateDiff(DiffCallback(dataList, newDataList))
+            val diffResult = DiffUtil.calculateDiff(getItemDiffCallback(dataList, newDataList))
             withContext(Main) { diffResult.dispatchUpdatesTo(this@BaseRecyclerViewAdapter) }
-            dataList = newDataList
+            dataList = newDataList.toCollection(ArrayList())
         }
     }
-}
-
-class DiffCallback(private val oldDataList: ArrayList<Any>, private val newDataList: ArrayList<Any>) : DiffUtil.Callback() {
-    override fun getOldListSize(): Int = oldDataList.size
-
-    override fun getNewListSize(): Int = newDataList.size
-
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldDataList[oldItemPosition]
-        val newItem = newDataList[newItemPosition]
-
-        return oldItem == newItem
-    }
-
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldDataList[oldItemPosition]
-        val newItem = newDataList[newItemPosition]
-
-        return areItemsTheSame(oldItemPosition, newItemPosition)
-    }
-
 }

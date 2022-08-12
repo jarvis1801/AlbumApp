@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_bar_album"
+        android:enabled="true"
+        android:visible="true"
+        android:icon="@drawable/ic_baseline_album_96"
+        android:title="@string/album"
+        />
+
+    <item
+        android:id="@+id/navigation_bar_bookmark"
+        android:enabled="true"
+        android:visible="true"
+        android:icon="@drawable/ic_baseline_bookmarks_96"
+        android:title="@string/bookmark"
+        />
+</menu>
